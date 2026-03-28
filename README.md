@@ -4,12 +4,6 @@
 
 ---
 
-## 📸 Preview do Projeto
-
-![Preview do Projeto](https://via.placeholder.com/1200x600/0f172a/8b5cf6?text=GameParts+Preview)
-
----
-
 ## 🌐 Demonstração
 
 🔗 Acesse o projeto online:  
