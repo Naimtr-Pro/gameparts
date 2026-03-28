@@ -1,0 +1,409 @@
+﻿/* style.css - Estilos personalizados para o site GameParts */
+
+/* Importa a fonte Inter do Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
+
+:root {
+  /* Variáveis de cores e espaçamento reutilizáveis */
+  --primary: #8b5cf6;
+  --secondary: #10b981;
+  --bg-dark: #0f172a;
+  --card-bg: #1e293b;
+  --bg: #f4f6f8;
+  --card: #ffffff;
+  --text: #0b1220;
+  --muted: #6b7280;
+  --max-w: 1100px;
+  --gap: 1rem;
+}
+
+/* Reset global de box sizing para evitar surpresas no layout */
+* {
+  box-sizing: border-box;
+}
+
+/* Estilos base do documento */
+html,
+body {
+  height: 100%;
+  margin: 0;
+  background: var(--bg-dark);
+  color: #f8fafc;
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  line-height: 1.4;
+}
+
+/* Texto com gradiente para títulos e destaques */
+.gradient-text {
+  background: linear-gradient(90deg, #a78bfa, #34d399);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Estilo base dos cartões de produto */
+.product-card,
+.produto {
+  background: var(--card-bg);
+  border-radius: 1rem;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Efeito hover suave para cartões */
+.product-card:hover,
+.produto:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px -5px rgba(139, 92, 246, 0.3);
+}
+
+/* Scrollbar customizada em navegadores WebKit */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0f172a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #475569;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #8b5cf6;
+}
+
+/* Links de navegação com underline animado */
+.nav-link {
+  position: relative;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -4px;
+  left: 0;
+  background-color: var(--primary);
+  transition: width 0.3s;
+}
+
+.nav-link:hover::after {
+  width: 100%;
+}
+
+/* Notificação de carrinho escondida por padrão */
+#cart-toast {
+  visibility: hidden;
+  opacity: 0;
+  min-width: 250px;
+  margin-left: -125px;
+  background-color: #10b981;
+  color: #fff;
+  text-align: center;
+  border-radius: 8px;
+  padding: 16px;
+  position: fixed;
+  z-index: 1000;
+  left: 50%;
+  bottom: 30px;
+  transform: translateX(-50%);
+  transition: visibility 0.2s, opacity 0.2s;
+}
+
+/* Estado visível do toast */
+#cart-toast.show {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* Animações para entrada e saída do toast */
+@keyframes fadein {
+  from {
+    bottom: 0;
+    opacity: 0;
+  }
+  to {
+    bottom: 30px;
+    opacity: 1;
+  }
+}
+
+@keyframes fadeout {
+  from {
+    bottom: 30px;
+    opacity: 1;
+  }
+  to {
+    bottom: 0;
+    opacity: 0;
+  }
+}
+
+/* Estilo do header principal */
+header {
+  background: var(--bg-dark);
+  color: #ffffff;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+/* Títulos da branding */
+#branding h1 {
+  margin: 0;
+  font-size: 1.4rem;
+}
+
+#branding p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* Navegação principal do cabeçalho */
+header nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+header nav a {
+  color: inherit;
+  text-decoration: none;
+  font-size: 0.95rem;
+}
+
+/* Formulário de busca dentro do cabeçalho */
+header form {
+  margin-left: auto;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+header label {
+  display: none;
+}
+
+/* Estilo padrão para inputs, selects e textarea */
+header input[type="search"],
+input[type="text"],
+input[type="email"],
+select,
+textarea {
+  padding: 0.45rem 0.6rem;
+  border: 1px solid #cfd6dc;
+  border-radius: 6px;
+  background: #fff;
+  font: inherit;
+}
+
+/* Botões primários da interface */
+header button,
+button {
+  background: var(--secondary);
+  color: #fff;
+  border: none;
+  padding: 0.45rem 0.75rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover,
+header button:hover {
+  opacity: 0.95;
+}
+
+main {
+  max-width: var(--max-w);
+  margin: 1.25rem auto;
+  padding: 0 1rem;
+  display: block;
+  gap: var(--gap);
+}
+
+section {
+  margin-bottom: 1.25rem;
+}
+
+section h2 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.25rem;
+}
+
+section p {
+  margin: 0 0 0.75rem 0;
+  color: var(--muted);
+}
+
+#categorias ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+#categorias a {
+  text-decoration: none;
+  color: var(--primary);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+}
+
+#produtos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1rem;
+}
+
+.produto {
+  background: var(--card);
+  border-radius: 8px;
+  padding: 0.75rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.produto h3 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.produto img {
+  width: 100%;
+  height: auto;
+  border-radius: 6px;
+  object-fit: cover;
+}
+
+.produto ul {
+  margin: 0 0 0.5rem 1rem;
+  color: var(--muted);
+}
+
+.produto p {
+  margin: 0;
+}
+
+.produto .actions {
+  margin-top: auto;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.produto .actions a {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+fieldset {
+  border: 1px solid #e2e8f0;
+  padding: 0.75rem;
+  border-radius: 8px;
+}
+
+label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  margin-top: 0.25rem;
+}
+
+address p {
+  margin: 0 0 0.5rem 0;
+}
+
+form > button {
+  width: auto;
+}
+
+footer {
+  background: #ffffff;
+  border-top: 1px solid #e6eef3;
+  padding: 1rem;
+}
+
+footer nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  gap: 1rem;
+}
+
+footer p {
+  margin: 0;
+  color: var(--muted);
+  margin-top: 0.75rem;
+  font-size: 0.9rem;
+}
+
+a:focus,
+button:focus,
+input:focus,
+select:focus,
+textarea:focus {
+  outline: 3px solid rgba(226, 59, 59, 0.12);
+  outline-offset: 2px;
+}
+
+@media (max-width: 980px) {
+  header nav ul {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    gap: 0.5rem;
+  }
+
+  header nav a {
+    padding: 0.45rem 0.75rem;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.08);
+  }
+
+  .produtos-grid {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  }
+}
+
+@media (max-width: 700px) {
+  header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  header form {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  header nav ul {
+    flex-wrap: wrap;
+  }
+
+  .produto {
+    padding: 0.65rem;
+  }
+}

@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <!-- Metadados de codificação e exibição -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GameParts - Peças para Computadores Gamers</title>
+    <meta name="description" content="Loja de peças para computadores gamers: placas de vídeo, processadores, placas-mãe, memórias, SSDs e periféricos." />
+    <!-- Tailwind CSS para estilização rápida e moderna -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+   /* Estilos internos personalizados do HTML */
+   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
+
+        :root {
+            --primary: #8b5cf6; /* Violeta Gamer */
+            --secondary: #10b981; /* Verde Neon */
+            --bg-dark: #0f172a;
+            --card-bg: #1e293b;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: #f8fafc;
+            scroll-behavior: smooth;
+        }
+
+        .gradient-text {
+            background: linear-gradient(90deg, #a78bfa, #34d399);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .product-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(139, 92, 246, 0.3);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #475569;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #8b5cf6;
+        }
+
+        .nav-link {
+            position: relative;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 0;
+            background-color: var(--primary);
+            transition: width 0.3s;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        #cart-toast {
+            visibility: hidden;
+            min-width: 250px;
+            margin-left: -125px;
+            background-color: #10b981;
+            color: #fff;
+            text-align: center;
+            border-radius: 8px;
+            padding: 16px;
+            position: fixed;
+            z-index: 1000;
+            left: 50%;
+            bottom: 30px;
+        }
+
+        #cart-toast.show {
+            visibility: visible;
+            animation: fadein 0.5s, fadeout 0.5s 2.5s;
+        }
+
+        @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
+        @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <!-- Header / Navegação -->
+    <header class="sticky top-0 z-50 bg-[#0f172a]/90 backdrop-blur-md border-b border-slate-800">
+        <div class="container mx-auto px-4 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div id="branding" class="text-center md:text-left">
+                <h1 class="text-3xl font-extrabold tracking-tighter gradient-text">GameParts</h1>
+                <p class="text-xs text-slate-400 uppercase tracking-widest">Hardware de Elite</p>
+            </div>
+
+            <nav aria-label="Menu principal" class="hidden lg:block">
+                <!-- Links principais de navegação do site -->
+                <ul class="flex space-x-6 font-medium text-slate-300">
+                    <li><a href="#home" class="nav-link hover:text-white">Home</a></li>
+                    <li><a href="#produtos" class="nav-link hover:text-white">Produtos</a></li>
+                    <li><a href="#categorias" class="nav-link hover:text-white">Categorias</a></li>
+                    <li><a href="#sobre" class="nav-link hover:text-white">Sobre</a></li>
+                    <li><a href="#contato" class="nav-link hover:text-white">Contato</a></li>
+                </ul>
+            </nav>
+
+            <div class="flex items-center gap-4 w-full md:w-auto">
+                <!-- Formulário de busca rápida de componentes -->
+                <form id="search-form" class="relative flex-grow md:flex-grow-0">
+                    <input id="buscar" name="q" type="search" 
+                        class="w-full bg-slate-800 border border-slate-700 rounded-full py-2 px-4 pl-10 focus:outline-none focus:ring-2 focus:ring-violet-500 text-sm" 
+                        placeholder="Buscar hardware..." />
+                    <span class="absolute left-3 top-2.5 text-slate-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                    </span>
+                </form>
+                
+                <a href="#carrinho" class="relative p-2 bg-slate-800 rounded-full hover:bg-slate-700 transition" id="cart-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                    <span id="cart-count" class="absolute -top-1 -right-1 bg-violet-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">0</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Conteúdo principal da página -->
+    <main id="main-content" class="flex-grow" role="main">
+        <!-- Hero Section -->
+        <section id="home" class="relative py-20 px-4 overflow-hidden bg-slate-900 border-b border-slate-800">
+            <div class="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
+                <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                            <path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" stroke-width="1"/>
+                        </pattern>
+                    </defs>
+                    <rect width="100%" height="100%" fill="url(#grid)" />
+                </svg>
+            </div>
+            <div class="container mx-auto text-center relative z-10">
+                <h2 id="hero-title" class="text-4xl md:text-6xl font-black mb-6 leading-tight">
+                    Monte a sua <span class="gradient-text">máquina gamer</span>
+                </h2>
+                <p class="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto mb-10">
+                    Encontre componentes de alta performance com garantia nacional e suporte especializado de quem entende de jogos.
+                </p>
+                <div class="flex flex-wrap justify-center gap-4">
+                    <a href="#produtos" class="bg-violet-600 hover:bg-violet-700 text-white font-bold py-3 px-8 rounded-lg transition-all shadow-lg shadow-violet-900/20">
+                        Ver Promoções
+                    </a>
+                    <a href="#categorias" class="bg-slate-800 hover:bg-slate-700 text-white font-bold py-3 px-8 rounded-lg transition-all border border-slate-700">
+                        Categorias
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Categorias Rápidas -->
+        <section id="categorias" class="py-12 bg-slate-950">
+            <div class="container mx-auto px-4">
+                <h2 class="text-2xl font-bold mb-8 flex items-center gap-2">
+                    <span class="w-2 h-8 bg-violet-600 rounded-full"></span>
+                    Categorias Principais
+                </h2>
+                <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                    <a href="#" class="bg-slate-900 p-6 rounded-2xl border border-slate-800 flex flex-col items-center hover:border-violet-500 transition-colors text-center group">
+                        <div class="w-12 h-12 bg-slate-800 rounded-lg flex items-center justify-center mb-3 group-hover:bg-violet-600 transition-colors">🚀</div>
+                        <span class="font-semibold text-sm">Placas de Vídeo</span>
+                    </a>
+                    <a href="#" class="bg-slate-900 p-6 rounded-2xl border border-slate-800 flex flex-col items-center hover:border-violet-500 transition-colors text-center group">
+                        <div class="w-12 h-12 bg-slate-800 rounded-lg flex items-center justify-center mb-3 group-hover:bg-violet-600 transition-colors">🧠</div>
+                        <span class="font-semibold text-sm">Processadores</span>
+                    </a>
+                    <a href="#" class="bg-slate-900 p-6 rounded-2xl border border-slate-800 flex flex-col items-center hover:border-violet-500 transition-colors text-center group">
+                        <div class="w-12 h-12 bg-slate-800 rounded-lg flex items-center justify-center mb-3 group-hover:bg-violet-600 transition-colors">⚡</div>
+                        <span class="font-semibold text-sm">Memórias</span>
+                    </a>
+                    <a href="#" class="bg-slate-900 p-6 rounded-2xl border border-slate-800 flex flex-col items-center hover:border-violet-500 transition-colors text-center group">
+                        <div class="w-12 h-12 bg-slate-800 rounded-lg flex items-center justify-center mb-3 group-hover:bg-violet-600 transition-colors">💾</div>
+                        <span class="font-semibold text-sm">SSD / HDD</span>
+                    </a>
+                    <a href="#" class="bg-slate-900 p-6 rounded-2xl border border-slate-800 flex flex-col items-center hover:border-violet-500 transition-colors text-center group">
+                        <div class="w-12 h-12 bg-slate-800 rounded-lg flex items-center justify-center mb-3 group-hover:bg-violet-600 transition-colors">⌨️</div>
+                        <span class="font-semibold text-sm">Periféricos</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Filtros -->
+        <section id="filtros-e-ordenacao" class="bg-slate-900 py-6 border-y border-slate-800">
+            <div class="container mx-auto px-4">
+                <form class="flex flex-wrap items-center gap-6">
+                    <div class="flex items-center gap-2">
+                        <label class="text-sm font-bold text-slate-400 uppercase tracking-tighter">Filtrar:</label>
+                        <select name="categoria" class="bg-slate-800 border border-slate-700 rounded-md px-3 py-1.5 text-sm focus:ring-1 focus:ring-violet-500 outline-none">
+                            <option value="">Todas Categorias</option>
+                            <option value="placas-de-video">Placas de Vídeo</option>
+                            <option value="processadores">Processadores</option>
+                            <option value="memoria-ram">Memória RAM</option>
+                        </select>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <label class="text-sm font-bold text-slate-400 uppercase tracking-tighter">Preço:</label>
+                        <select name="preco" class="bg-slate-800 border border-slate-700 rounded-md px-3 py-1.5 text-sm focus:ring-1 focus:ring-violet-500 outline-none">
+                            <option value="">Qualquer</option>
+                            <option value="0-500">Até R$500</option>
+                            <option value="500-2000">R$500 - R$2000</option>
+                            <option value="2000+">Acima de R$2000</option>
+                        </select>
+                    </div>
+                    <button type="button" class="ml-auto text-violet-400 text-sm font-semibold hover:text-violet-300 transition-colors">Limpar Filtros</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Produtos em destaque -->
+        <section id="produtos" class="py-16 container mx-auto px-4">
+            <div class="flex justify-between items-end mb-10">
+                <div>
+                    <h2 id="produtos-title" class="text-3xl font-black italic uppercase">Destaques da Semana</h2>
+                    <p class="text-slate-500">As melhores ofertas de hardware gamer</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-xs text-slate-500 uppercase font-bold">Ordenar:</span>
+                    <select class="bg-transparent border-none text-sm font-bold text-violet-400 cursor-pointer focus:ring-0">
+                        <option value="relevancia">Relevância</option>
+                        <option value="preco-asc">Menor Preço</option>
+                        <option value="preco-desc">Maior Preço</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 produtos-grid" role="list">
+                <!-- Produto 1 -->
+                <article class="product-card bg-slate-900 rounded-3xl overflow-hidden border border-slate-800 flex flex-col" role="listitem" aria-label="Placa de Vídeo RTX 4070 Ti">
+                    <div class="relative h-64 bg-slate-800 overflow-hidden group">
+                        <div class="absolute inset-0 flex items-center justify-center p-8 bg-gradient-to-br from-violet-600/20 to-transparent">
+                             <!-- Placeholder SVG para a imagem -->
+                             <svg viewBox="0 0 24 24" class="w-full h-full text-slate-600" fill="currentColor">
+                                <path d="M21 16.5c0 .38-.21.71-.53.88l-7.97 4.44c-.31.17-.69.17-1 0l-7.97-4.44c-.31-.17-.53-.5-.53-.88v-9c0-.38.21-.71.53-.88l7.97-4.44c.31-.17.69-.17 1 0l7.97 4.44c.31.17.53.5.53.88v9z"/>
+                             </svg>
+                        </div>
+                        <span class="absolute top-4 left-4 bg-violet-600 text-white text-[10px] font-black px-2 py-1 rounded-md uppercase">Novo</span>
+                    </div>
+                    <div class="p-6 flex-grow flex flex-col">
+                        <h3 id="produto-1-title" class="text-xl font-bold mb-2 group-hover:text-violet-400 transition-colors">Placa de Vídeo RTX 4070 Ti</h3>
+                        <p class="text-slate-400 text-sm mb-4 line-clamp-2">A revolução gráfica que seu setup precisava para rodar tudo no ultra.</p>
+                        <ul class="text-xs text-slate-500 space-y-1 mb-6">
+                            <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 bg-violet-500 rounded-full"></span> 12 GB GDDR6X</li>
+                            <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 bg-violet-500 rounded-full"></span> Interface PCIe 4.0</li>
+                            <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 bg-violet-500 rounded-full"></span> Ray Tracing & DLSS 3</li>
+                        </ul>
+                        <div class="mt-auto pt-6 border-t border-slate-800 flex items-center justify-between">
+                            <div>
+                                <p class="text-[10px] text-slate-500 line-through">R$ 5.499,00</p>
+                                <p class="text-2xl font-black text-emerald-400">R$ 4.999,00</p>
+                            </div>
+                            <button type="button" onclick="addToCart('Placa RTX 4070 Ti')" class="bg-violet-600 hover:bg-violet-700 p-3 rounded-xl transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Produto 2 -->
+                <article class="product-card bg-slate-900 rounded-3xl overflow-hidden border border-slate-800 flex flex-col" role="listitem" aria-label="Processador FuryCore i9">
+                    <div class="relative h-64 bg-slate-800 overflow-hidden">
+                        <div class="absolute inset-0 flex items-center justify-center p-8 bg-gradient-to-br from-emerald-600/20 to-transparent">
+                             <svg viewBox="0 0 24 24" class="w-full h-full text-slate-600" fill="currentColor">
+                                <path d="M13 13h-2v-2h2v2zm0-4h-2V7h2v2zm4 4h-2v-2h2v2zm0-4h-2V7h2v2zM9 13H7v-2h2v2zm0-4H7V7h2v2zm12 11h-2v-2h2v2zm0-4h-2v-2h2v2zm-4 4h-2v-2h2v2zm0-4h-2v-2h2v2zm-4 4h-2v-2h2v2zm0-4h-2v-2h2v2zm-4 4H7v-2h2v2zm0-4H7v-2h2v2zM5 20H3v-2h2v2zm0-4H3v-2h2v2z"/>
+                             </svg>
+                        </div>
+                        <span class="absolute top-4 left-4 bg-emerald-600 text-white text-[10px] font-black px-2 py-1 rounded-md uppercase">Oferta</span>
+                    </div>
+                    <div class="p-6 flex-grow flex flex-col">
+                        <h3 id="produto-2-title" class="text-xl font-bold mb-2">Processador FuryCore i9</h3>
+                        <p class="text-slate-400 text-sm mb-4 line-clamp-2">Potência bruta para streaming e jogos competitivos simultâneos.</p>
+                        <ul class="text-xs text-slate-500 space-y-1 mb-6">
+                            <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span> 16 Núcleos / 24 Threads</li>
+                            <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span> Boost: 5.4 GHz</li>
+                            <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span> Cache: 36 MB L3</li>
+                        </ul>
+                        <div class="mt-auto pt-6 border-t border-slate-800 flex items-center justify-between">
+                            <div>
+                                <p class="text-2xl font-black text-emerald-400">R$ 2.199,00</p>
+                                <p class="text-[10px] text-slate-500">em até 12x sem juros</p>
+                            </div>
+                            <button type="button" onclick="addToCart('Processador FuryCore i9')" class="bg-violet-600 hover:bg-violet-700 p-3 rounded-xl transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Produto 3 -->
+                <article class="product-card bg-slate-900 rounded-3xl overflow-hidden border border-slate-800 flex flex-col" role="listitem" aria-label="SSD NVMe 1TB HyperSpeed">
+                    <div class="relative h-64 bg-slate-800 overflow-hidden">
+                        <div class="absolute inset-0 flex items-center justify-center p-8 bg-gradient-to-br from-blue-600/20 to-transparent">
+                             <svg viewBox="0 0 24 24" class="w-full h-full text-slate-600" fill="currentColor">
+                                <path d="M19 12h-12c-1.1 0-2 .9-2 2v2h16v-2c0-1.1-.9-2-2-2zm-12 2h2v2h-2v-2zm4 0h2v2h-2v-2zm4 0h2v2h-2v-2zm6-4h-20v-2c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2v2zm-16-2h2v2h-2v-2zm4 0h2v2h-2v-2zm4 0h2v2h-2v-2z"/>
+                             </svg>
+                        </div>
+                    </div>
+                    <div class="p-6 flex-grow flex flex-col">
+                        <h3 id="produto-3-title" class="text-xl font-bold mb-2">SSD NVMe 1TB HyperSpeed</h3>
+                        <p class="text-slate-400 text-sm mb-4 line-clamp-2">Carregue seus jogos instantaneamente com tecnologia Gen4.</p>
+                        <ul class="text-xs text-slate-500 space-y-1 mb-6">
+                            <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full"></span> Velocidade: 7.000 MB/s</li>
+                            <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full"></span> Tecnologia NVMe 1.4</li>
+                            <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full"></span> Interface M.2 2280</li>
+                        </ul>
+                        <div class="mt-auto pt-6 border-t border-slate-800 flex items-center justify-between">
+                            <div>
+                                <p class="text-2xl font-black text-emerald-400">R$ 599,00</p>
+                                <p class="text-[10px] text-slate-500">Pronta entrega</p>
+                            </div>
+                            <button type="button" onclick="addToCart('SSD NVMe 1TB')" class="bg-violet-600 hover:bg-violet-700 p-3 rounded-xl transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <!-- Newsletter -->
+        <section id="newsletter" class="bg-violet-600 py-16">
+            <div class="container mx-auto px-4 text-center">
+                <h2 id="newsletter-title" class="text-3xl font-black text-white mb-4 italic">LOOT EXCLUSIVO!</h2>
+                <p class="text-violet-100 mb-8 max-w-md mx-auto">Inscreva-se e receba cupons de desconto e novidades sobre novos lançamentos direto no seu e-mail.</p>
+                <form action="#" class="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto" onsubmit="handleNewsletter(event)">
+                    <input id="news-email" name="email" type="email" placeholder="seu@email.com" required 
+                        class="flex-grow rounded-xl px-6 py-3 text-slate-900 focus:outline-none focus:ring-4 focus:ring-violet-400" />
+                    <button type="submit" class="bg-slate-900 hover:bg-black text-white font-bold py-3 px-8 rounded-xl transition-all uppercase tracking-widest text-sm">
+                        Inscrever
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Sobre & Contato -->
+        <div class="container mx-auto px-4 py-16 grid grid-cols-1 lg:grid-cols-2 gap-16">
+            <!-- Sobre -->
+            <section id="sobre" aria-labelledby="sobre-title" class="bg-slate-900/50 p-8 rounded-3xl border border-slate-800">
+                <h2 id="sobre-title" class="text-3xl font-bold mb-6 italic text-violet-400">Sobre a GameParts</h2>
+                <div class="space-y-4 text-slate-400 leading-relaxed">
+                    <p>Nascida da paixão pelo universo PC Master Race, a GameParts não é apenas uma loja, mas um hub de tecnologia para entusiastas.</p>
+                    <p>Selecionamos a dedo cada placa, processador e acessório. Nosso compromisso é entregar a melhor performance possível para cada real investido.</p>
+                    <div class="flex gap-4 pt-6">
+                        <div class="text-center">
+                            <p class="text-2xl font-black text-white">5k+</p>
+                            <p class="text-xs">Clientes</p>
+                        </div>
+                        <div class="w-px h-10 bg-slate-800"></div>
+                        <div class="text-center">
+                            <p class="text-2xl font-black text-white">100%</p>
+                            <p class="text-xs">Original</p>
+                        </div>
+                        <div class="w-px h-10 bg-slate-800"></div>
+                        <div class="text-center">
+                            <p class="text-2xl font-black text-white">24h</p>
+                            <p class="text-xs">Suporte</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Contato -->
+            <section id="contato" aria-labelledby="contato-title" class="bg-slate-900/50 p-8 rounded-3xl border border-slate-800">
+                <h2 id="contato-title" class="text-3xl font-bold mb-6 italic text-violet-400">Entre em Contato</h2>
+                <form action="#" method="post" class="space-y-4" onsubmit="handleContact(event)">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="nome" class="block text-xs font-bold text-slate-500 uppercase mb-1">Nome</label>
+                            <input id="nome" name="nome" type="text" required class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm focus:ring-2 focus:ring-violet-500 outline-none" />
+                        </div>
+                        <div>
+                            <label for="email" class="block text-xs font-bold text-slate-500 uppercase mb-1">Email</label>
+                            <input id="email" name="email" type="email" required class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm focus:ring-2 focus:ring-violet-500 outline-none" />
+                        </div>
+                    </div>
+                    <div>
+                        <label for="mensagem" class="block text-xs font-bold text-slate-500 uppercase mb-1">Mensagem</label>
+                        <textarea id="mensagem" name="mensagem" rows="4" required class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm focus:ring-2 focus:ring-violet-500 outline-none resize-none"></textarea>
+                    </div>
+                    <button type="submit" class="w-full bg-violet-600 hover:bg-violet-700 text-white font-bold py-3 rounded-lg transition-all shadow-lg">
+                        Enviar Ticket de Suporte
+                    </button>
+                </form>
+                <div class="mt-8 flex flex-col md:flex-row gap-6 text-sm text-slate-400">
+                    <p class="flex items-center gap-2">📧 suporte@gameparts.example</p>
+                    <p class="flex items-center gap-2">📞 (11) 4000-0000</p>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-950 border-t border-slate-800 pt-16 pb-8">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+                <div class="col-span-1 md:col-span-2">
+                    <h2 class="text-2xl font-black gradient-text mb-4 tracking-tighter">GameParts</h2>
+                    <p class="text-slate-500 text-sm max-w-sm mb-6">A maior loja de hardware gamer da América Latina. Equipando lendas desde 2026.</p>
+                    <div class="flex gap-4">
+                        <a href="#" class="w-10 h-10 bg-slate-900 rounded-full flex items-center justify-center hover:bg-violet-600 transition-colors">FB</a>
+                        <a href="#" class="w-10 h-10 bg-slate-900 rounded-full flex items-center justify-center hover:bg-violet-600 transition-colors">IG</a>
+                        <a href="#" class="w-10 h-10 bg-slate-900 rounded-full flex items-center justify-center hover:bg-violet-600 transition-colors">TW</a>
+                        <a href="#" class="w-10 h-10 bg-slate-900 rounded-full flex items-center justify-center hover:bg-violet-600 transition-colors">YT</a>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="font-bold text-white mb-6 uppercase tracking-widest text-xs">Suporte</h3>
+                    <ul class="space-y-3 text-sm text-slate-500">
+                        <li><a href="#suporte" class="hover:text-violet-400 transition-colors">Central de Ajuda</a></li>
+                        <li><a href="#trocas" class="hover:text-violet-400 transition-colors">Trocas e Devoluções</a></li>
+                        <li><a href="#rastreio" class="hover:text-violet-400 transition-colors">Rastrear Pedido</a></li>
+                        <li><a href="#garantia" class="hover:text-violet-400 transition-colors">Garantia</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-bold text-white mb-6 uppercase tracking-widest text-xs">Legal</h3>
+                    <ul class="space-y-3 text-sm text-slate-500">
+                        <li><a href="#politica-privacidade" class="hover:text-violet-400 transition-colors">Privacidade</a></li>
+                        <li><a href="#termos" class="hover:text-violet-400 transition-colors">Termos de Uso</a></li>
+                        <li><a href="#vendas" class="hover:text-violet-400 transition-colors">Políticas de Venda</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-slate-900 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-slate-600">
+                <p>&copy; 2026 GameParts Inc. Todos os direitos reservados.</p>
+                <div class="flex items-center gap-4">
+                    <img src="https://via.placeholder.com/40x25/111/fff?text=VISA" alt="Visa" class="opacity-30 grayscale hover:grayscale-0 transition-all cursor-pointer">
+                    <img src="https://via.placeholder.com/40x25/111/fff?text=MC" alt="Mastercard" class="opacity-30 grayscale hover:grayscale-0 transition-all cursor-pointer">
+                    <img src="https://via.placeholder.com/40x25/111/fff?text=PIX" alt="Pix" class="opacity-30 grayscale hover:grayscale-0 transition-all cursor-pointer">
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Notificações (Toasts) -->
+    <div id="cart-toast">Produto adicionado ao carrinho! 🛒</div>
+
+    <script src="js/main.js" defer></script>
+</body>
+</html>
